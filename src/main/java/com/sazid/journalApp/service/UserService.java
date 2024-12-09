@@ -53,6 +53,9 @@ public class UserService {
             User user = optionalUser.get();
             user.setUsername((updateUser.getUsername()!=null && !updateUser.getUsername().equals("") ? updateUser.getUsername() : user.getUsername()));
             user.setPassword((updateUser.getPassword()!=null && !updateUser.getPassword().equals("") ? passwordEncoder.encode(updateUser.getPassword()) : user.getPassword()));
+            user.setEmail((updateUser.getEmail()!=null && !updateUser.getEmail().equals("") ? updateUser.getEmail() : user.getEmail()));
+            user.setSentimentAnalysis(updateUser.getSentimentAnalysis()!=null ? updateUser.getSentimentAnalysis() : user.getSentimentAnalysis());
+
             userRepository.save(user);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

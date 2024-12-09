@@ -14,12 +14,25 @@ public class EmailService {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    public ResponseEntity<?> sendMail(JsonNode incomingMailData){
+    public ResponseEntity<?> sendMailTesting(JsonNode incomingMailData){
         try{
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setTo(incomingMailData.get("reciever").asText());
             mailMessage.setSubject(incomingMailData.get("subject").asText());
             mailMessage.setText(incomingMailData.get("body").asText());
+            javaMailSender.send(mailMessage);
+            return ResponseEntity.ok("mail sent successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error occurred in sendMail method: " + e);
+        }
+    }
+
+    public ResponseEntity<?> sendMail(String receiver, String subject, String body){
+        try{
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setTo(receiver);
+            mailMessage.setSubject(subject);
+            mailMessage.setText(body);
             javaMailSender.send(mailMessage);
             return ResponseEntity.ok("mail sent successfully");
         } catch (Exception e) {

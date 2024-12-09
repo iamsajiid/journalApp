@@ -24,6 +24,8 @@ public class JournalEntry{
 
     private String createdBy;
 
+    private Sentiment sentiment;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
