@@ -96,7 +96,7 @@ public class UserScheduler {
     public ResponseEntity<?> getSaUsersAndSendMail() {
         try {
             List<User> users = userRepositoryImpl.findSaUsers();
-            users.forEach(this::processUser);
+            users.forEach(user -> processUser(user));
             return ResponseEntity.ok("Emails are being sent");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error in scheduler: " + e.getMessage());
@@ -132,7 +132,6 @@ public class UserScheduler {
     @Async
     private void sendEmail(String userEmail, String username, Sentiment sentiment) {
         String subject = "Mood of the Week for " + username;
-        String body = "The most frequent sentiment this week is: " + sentiment.toString();
-        emailService.sendMail(userEmail, subject, body);
+        emailService.sendMail(userEmail, subject, sentiment.toString());
     }
 }
