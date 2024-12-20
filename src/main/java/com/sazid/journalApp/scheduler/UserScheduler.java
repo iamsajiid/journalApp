@@ -92,7 +92,7 @@ public class UserScheduler {
 
     private static final LocalDateTime SEVEN_DAYS_AGO = LocalDateTime.now().minus(7, ChronoUnit.DAYS);
 
-    @Scheduled(cron = "0 * * * * *")
+//    @Scheduled(cron = "0 * * * * *")
     public ResponseEntity<?> getSaUsersAndSendMail() {
         try {
             List<User> users = userRepositoryImpl.findSaUsers();

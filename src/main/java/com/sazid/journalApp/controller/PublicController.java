@@ -19,4 +19,9 @@ public class PublicController {
     public ResponseEntity<?> createUser(@RequestBody User user){
         return userService.createUser(user);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody User user){
+        return userService.login(user);
+    }
 }

@@ -3,10 +3,15 @@ package com.sazid.journalApp.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sazid.journalApp.entities.User;
 import com.sazid.journalApp.repository.UserRepository;
+import com.sazid.journalApp.utility.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +30,12 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtUtil jwtUtil;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> allUsers = userRepository.findAll();
@@ -39,6 +50,17 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    public ResponseEntity<?> login(User user){
+        try{
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+            String token = jwtUtil.generateToken(userDetails.getUsername());
+            return ResponseEntity.ok(token);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("wrong username/password");
         }
     }
 
